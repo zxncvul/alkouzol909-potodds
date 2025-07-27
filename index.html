@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Outs Trainer Básico</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:;base64,=">
+</head>
+<body>
+  <!-- Pantalla principal del juego -->
+  <div id="screen-outs" class="outs-screen">
+    <!-- Mensaje dinámico (ejercicio / estado) -->
+    <div id="combo-global" class="combo-global"></div>
+    
+    <!-- Board + Hero -->
+    <div class="poker-outs">
+      <div class="row">
+        <div id="duel-board" class="board">
+          <!-- Las 5 cartas del board se insertarán dinámicamente aquí -->
+        </div>
+      </div>
+      <div class="row">
+        <div id="hero-hand" class="hand">
+          <!-- Las 2 cartas del héroe se insertarán dinámicamente aquí -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Controles: Grid + Botones -->
+    <div id="bottom-controls" class="control-bar">
+      <!-- El grid de outs y los botones CALL / OJITO / FOLD se generan por JS -->
+    </div>
+  </div>
+
+  <!-- Pantalla de configuración -->
+  <div id="config-screen" class="outs-screen" style="display:none;">
+    <h2>Configuración</h2>
+    <button id="toggle-turn" class="config-btn">Turn: OFF</button>
+    <button id="exit-config" class="config-btn exit-btn">Salir</button>
+  </div>
+
+  <!-- Script principal -->
+  <script type="module">
+    import { generateBasicSpot } from './outsBasic.js';
+    window.addEventListener('DOMContentLoaded', generateBasicSpot);
+  </script>
+</body>
+</html>
