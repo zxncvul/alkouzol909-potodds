@@ -1,3 +1,4 @@
+
 /* ===============================
    FUENTE Y RESETEO BÁSICO
    =============================== */
@@ -93,9 +94,10 @@ body {
 }
 
 .board .board-slot:nth-child(4) {
-  margin-left: 0.6rem;  /* Ajusta este valor para mayor separación */
+  margin-left: 0.6rem;  
   margin-right: 0.6rem;
 }
+
 /* ===============================
    CARTAS ESPECIALES DEL BOARD
    =============================== */
@@ -104,7 +106,6 @@ body {
 }
 
 .board-slot.disabled-turn {
-  
   border: 1px dashed #29a847;
 }
 
@@ -116,7 +117,6 @@ body {
   border: 1px solid #e74c3c !important;
 }
 
-
 /* ===============================
    HERO HAND + OJITO
    =============================== */
@@ -125,30 +125,131 @@ body {
   display: inline-flex;
 }
 
-.hero-eye {
-  position: absolute;
-  right: -7.5rem;
-  top: 110%;
-  transform: translateY(-51%);
-  font-size: 4rem;
-  padding: 0.4rem 1rem;
-  background: transparent;
-  border: none;
-  color: #29a847;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+/* ===============================
+   CONTENEDOR DEL HÉROE (CANDADO + OJITO + CARTAS)
+   =============================== */
+.hero-row {
+  position: relative;          
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.hero-eye:hover {
-  background: transparent;
-  color: #29a847;
+/* ===============================
+   BOTONES LATERALES IZQUIERDA (CANDADO / TEXT-LOCK / OJITO)
+   =============================== */
+
+
+
+
+
+
+.hero-lock:hover,
+.hero-eye:hover,
+#text-lock:hover {
+  color: #29a847cc;
+}
+
+.hero-lock.active,
+#text-lock.active {
+  color: #29a8476b;
 }
 
 .hero-eye.active {
-  background: transparent;
   color: #29a84750;
 }
+
+
+.btn-wrapper {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-wrapper.left {
+  left: -7.2rem;
+  flex-direction: row;
+  align-items: center;
+}
+
+.btn-wrapper.right {
+  right: -6.8rem;
+  flex-direction: row;
+  align-items: center;
+}
+
+.btn-label {
+  color: #29a84752;
+  font-size: 13px;
+  white-space: nowrap; /* Impide saltos de línea */
+}
+
+.btn-wrapper.left button {
+  order: 2; /* Icono a la derecha */
+}
+
+.btn-wrapper.left .btn-label {
+  order: 1; /* Texto a la izquierda */
+}
+
+
+/* ===============================
+   BOTONES DERECHA (CONFIG / CAPTURE / NEXT)
+   =============================== */
+.hero-config,
+.hero-capture,
+.hero-next {
+  font-size: 1.5rem;
+  font-family: 'GohuMono', monospace !important;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #29a847a8;
+  
+  right: -3.5rem;  
+  transition: color 0.2s;
+}
+
+.hero-config { top: 12px; }       
+.hero-capture { top: 54%; }       
+.hero-next { top: 85%; }          
+
+.hero-config:hover,
+.hero-capture:hover,
+.hero-next:hover {
+  color: #29a847cc;
+}
+
+.hero-config:focus,
+.hero-capture:focus,
+.hero-next:focus {
+  outline: none;
+}
+
+.hero-config.active,
+.hero-capture.active,
+.hero-next.active {
+  color: #29a8476b;
+}
+
+/* Estilos para los botones de la izquierda */
+.btn-wrapper.left button.hero-lock,
+.btn-wrapper.left button.hero-eye {
+  font-size: 1.5rem;
+  font-family: 'GohuMono', monospace;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #29a847a8;
+  transition: color 0.2s;
+}
+
+.btn-wrapper.left button.hero-lock:hover,
+.btn-wrapper.left button.hero-eye:hover {
+  color: #29a847cc;
+}
+
 
 /* ===============================
    BARRA INFERIOR
@@ -167,8 +268,8 @@ body {
    GRID DE OUTS (4x13)
    =============================== */
 .identify-grid {
-  border-collapse: collapse;
-  margin: 0 auto;
+  border-collapse: separate;
+  margin: -0rem auto 0; 
   font-family: 'GohuMono', monospace;
   color: #29a847;
   text-align: center;
@@ -176,9 +277,10 @@ body {
 }
 
 .identify-grid td {
-  width: 22px;
-  height: 22px;
-  border: 1px solid #29a847;
+  width: 23px;
+  height: 23px;
+  border: 0.5px solid #000000;
+  border-radius: 4px;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
   font-size: 11px;
@@ -187,31 +289,37 @@ body {
 .identify-grid .suit-cell {
   width: 28px;
   font-weight: bold;
-  background: #111;
+  border-radius: 5px;
+  background: #29a84711;
+
   cursor: default;
 }
 
 /* Estados de las celdas del grid */
 .card-grid.selected {
-  background: #29a847;
+   
+  background: #29a847b6;
   color: #000;
 }
 
 .card-grid.correct {
-  background: #2ecc71;
+  background: #29a847b6;
+
   color: #000;
 }
 
 .card-grid.error {
-  background: #e74c3c;
+  background: #a82929b6;
   color: #fff;
 }
 
 .card-grid.missed {
   background: #000;
   color: #e74c3c;
-  border: 1px dashed #e74c3c;
+  border: 0px dashed #e74c3c;
 }
+
+
 
 /* ===============================
    CONTADORES DE OUTS
@@ -226,18 +334,15 @@ body {
 
 .positive-counter {
   color: #2ecc71;
-  min-width: 30px;  /* Ajusta este valor según tu diseño */
-  
+  min-width: 30px;  
   font-size: 12px;
 }
 
 .negative-counter {
   color: #e74c3c;
-  min-width: 30px;  /* Ajusta este valor según tu diseño */
+  min-width: 30px;  
   font-size: 12px;
 }
-
-
 
 /* ===============================
    NUEVA FILA DE EQUITY
@@ -247,7 +352,7 @@ body {
   justify-content: space-around;
   align-items: center;
   gap: 1rem;
-  margin: 0.8rem 0 0.5rem;
+  margin: -0rem 0 0.5rem;
   width: 100%;
 }
 
@@ -268,7 +373,6 @@ body {
   text-align: left;
   background: transparent;
   border: none;
-  border-bottom: none;
   color: #29a847;
   font-family: 'GohuMono', monospace;
   font-size: 12px;
@@ -296,7 +400,6 @@ body {
   top: 2px;
 }
 
-
 @keyframes blink {
   0%, 50% { opacity: 1; }
   50%, 100% { opacity: 0; }
@@ -309,14 +412,14 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0.3rem auto 0;
-  gap: 0.3rem;
+  margin: 0rem auto 0;
+  gap: 0rem;
   width: fit-content;
 }
 
 .numa-row {
   display: flex;
-  gap: 0.3rem;
+  gap: 0rem;
 }
 
 .numa-btn {
@@ -329,8 +432,8 @@ body {
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
   border-radius: 3px;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 7.6rem;
+  height: 3rem;
   text-align: center;
 }
 
@@ -346,8 +449,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 0rem;
+  margin-top: -0.5rem;
 }
 
 .action-btn {
@@ -355,8 +458,8 @@ body {
   border: 1px solid #29a847;
   color: #29a847;
   font-family: 'GohuMono', monospace;
-  font-size: 14px;
-  padding: 0.5rem 1.5rem;
+  font-size: 14px;    
+  padding: 0.6rem 1rem; 
   border-radius: 3px;
   cursor: pointer;
   transition: background 0.2s;
@@ -384,12 +487,15 @@ body {
 .card.highlight-dim {
   background: #29a8472c;
   border: 1px dashed #29a847;
+  border-radius: 5px;
   color: #29a847;
 }
 
 .card-grid.hint {
   background: #29a84738;
-  border: 1px solid #29a847;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  
 }
 
 /* ===============================
@@ -402,8 +508,6 @@ body {
 @keyframes blink-out {
   0%, 100% { background-color: #29a8474b; }
   50% { background-color: #29a847a2; }
-
-  
 }
 
 /* ===============================
@@ -445,6 +549,7 @@ body {
   background: #e74c3c;
   color: #000;
 }
+
 /* Etiquetas de equity al lado de los contadores */
 .equity-labels-inline {
   display: flex;
@@ -454,21 +559,72 @@ body {
 }
 
 .inline-equity {
-    font-family: 'GohuMono', monospace;
+  font-family: 'GohuMono', monospace;
   font-size: 12px;
   color: #29a847;
   display: inline-block;
-  min-width: 70px;  /* ancho mínimo */
-  max-width: 70px;  /* ancho máximo */
-  text-align: left; /* o center, según prefieras */
-  white-space: nowrap; /* evita que se dividan en varias líneas */
+  min-width: 70px;
+  max-width: 70px;
+  text-align: left;
+  white-space: nowrap;
 }
+
 .outs-header {
-    margin-top: 30px; 
+  margin-top: -18px; 
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 0rem; /* espacio entre contadores y NTR */
+  gap: 0rem; 
   font-size: 12px;
   margin-left: -20px;
+}
+
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Botones pequeños para ":" y "%" */
+.action-btn.small-btn {
+  width: 4rem;
+  height: 3rem;
+  padding: 0;
+  font-size: 1rem;
+  text-align: center;
+  border: none;
+  
+}
+
+
+#hero-next {
+  font-size: 1.2rem;   /* Más pequeño que el resto */
+  line-height: 1;      /* Asegura que no afecte la altura del contenedor */
+  vertical-align: middle;
+}
+
+.call-btn {
+  background: #29a8473f;   /* Fondo verde brillante */
+  color: #29a847;        /* Texto negro */
+}
+
+.fold-btn {
+  background: #a829292d;   /* Fondo rojo */
+  color: #a82929;        /* Texto blanco */
+}
+
+.call-btn, .fold-btn {
+  border: 0px solid #29a847; /* Borde verde */
+  border-radius: 3px;        /* Bordes redondeados */
+  width: 120px;
+  height: 50px;
+}
+
+.call-btn:hover, .fold-btn:hover {
+  background: inherit;
+  color: inherit;
+}
+
+.identify-grid td:first-child {
+  width: 14px;   /* Ajusta el ancho solo de la primera columna */
+  padding: 0;    /* Opcional: elimina el relleno */
 }
