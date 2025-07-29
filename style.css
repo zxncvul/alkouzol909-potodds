@@ -628,3 +628,10 @@ button:focus {
   width: 14px;   /* Ajusta el ancho solo de la primera columna */
   padding: 0;    /* Opcional: elimina el relleno */
 }
+
+html, body, button, input, textarea, select, span, div, p, h1, h2, h3, h4, h5, h6 {
+  font-family: 'GohuMono', monospace !important;
+  font-variant-emoji: none; /* Previene la sustitución por emojis en navegadores que soporten esta propiedad */
+  font-style: normal;
+}
+
