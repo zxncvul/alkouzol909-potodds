@@ -1,19 +1,123 @@
+
 import { renderOutsGrid, renderEquityRow, setSolutionOuts, validateOutsSelection } from './identify.js';
 import { attachKeypadToEquity } from './numaKeypad.js';
-import { toggleRevealHints } from './reveal.js'; // Lógica del ojito en archivo separado
+import { toggleRevealHints } from './reveal.js';
+
+// ==========================
+// Constantes y variables globales
+// ==========================
+const RANKS = ['2','3','4','5','6','7','8','9','T','J','Q','K','A'];
+const SUITS = ['♠','♥','♦','♣'];
+
+export let currentOuts = 0;
+export let currentOutsList = [];
+export let currentBoard = [];
+export let currentHero = [];
+
+export let forceTurn = false;
+export let lockActive = false;     // Estado global del candado (Hero + Board)
+export let textLockActive = false; // Estado global para bloqueo del enunciado
+
+let showTurn = false;
+let currentEquityTurn = 0;
+let currentEquityRiver = 0;
+
+// ==========================
+// Lógica del botón candado
+// ==========================
+export function initHeroLock() {
+  const lockBtn = document.getElementById('hero-lock');
+  if (!lockBtn) return;
+
+  lockBtn.addEventListener('click', () => {
+    lockActive = !lockActive;
+    lockBtn.classList.toggle('active', lockActive);
+    console.log("Candado (Hero/Board):", lockActive ? "ON" : "OFF");
+  });
+}
+
+// ==========================
+// Lógica del botón text-lock
+// ==========================
+export function initTextLock() {
+  const textLockBtn = document.getElementById('text-lock');
+  if (!textLockBtn) return;
+
+  textLockBtn.addEventListener('click', () => {
+    textLockActive = !textLockActive;
+    textLockBtn.classList.toggle('active', textLockActive);
+    console.log("Text Lock (enunciado):", textLockActive ? "ON" : "OFF");
+  });
+}
+
+// ==========================
+// Botones de la derecha
+// ==========================
+export function initRightButtons() {
+  const configBtn = document.getElementById('hero-config');
+  const captureBtn = document.getElementById('hero-capture');
+  const nextBtn = document.getElementById('hero-next');
+
+  // Configuración
+  if (configBtn) {
+    configBtn.addEventListener('click', () => {
+      document.getElementById('screen-outs').style.display = 'none';
+      document.getElementById('config-screen').style.display = 'flex';
+    });
+  }
+
+  // Capturar al portapapeles
+  if (captureBtn) {
+    captureBtn.addEventListener('click', copyCurrentCase);
+  }
+
+  // Forzar siguiente
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      generateBasicSpot(); // Lanza nuevo ejercicio sin validar
+    });
+  }
+}
+
+/**
+ * Copia todo el caso actual al portapapeles
+ */
+function copyCurrentCase() {
+  const hero = currentHero.join(' ');
+  const board = currentBoard.join(' ');
+  const outs = currentOutsList.join(' ');
+  const potOdds = document.getElementById('inline-needed')?.textContent || 'N: --';
+  const eqTurn = document.getElementById('equity-turn')?.value || '--';
+  const eqRiver = document.getElementById('equity-river')?.value || '--';
+  const enunciado = document.getElementById('combo-global')?.textContent || '--';
+
+  const text = `
+--- CASO PÓKER ---
+Enunciado: ${enunciado}
+Hero: ${hero}
+Board: ${board}
+Outs: ${outs}
+Pot Odds: ${potOdds}
+Equity Turn: ${eqTurn}
+Equity River: ${eqRiver}
+------------------
+`.trim();
+
+  navigator.clipboard.writeText(text)
+    .then(() => console.log("Caso copiado al portapapeles"))
+    .catch(err => console.error("Error al copiar:", err));
+}
 
 // ==========================
 // Funciones de renderado locales
 // ==========================
-
 function renderFullBoard(boardCards) {
   const container = document.getElementById('duel-board');
   if (!container) return;
   container.innerHTML = '';
 
-  // Board siempre con 5 posiciones
   const totalBoard = [...boardCards];
-  while (totalBoard.length < 5) totalBoard.push(null); // Rellenar con placeholders
+  while (totalBoard.length < 5) totalBoard.push(null);
 
   totalBoard.forEach((card, index) => {
     const d = document.createElement('div');
@@ -21,18 +125,15 @@ function renderFullBoard(boardCards) {
     if (card) {
       const span = document.createElement('span');
       span.className = 'card-content';
-      span.textContent = `${card[0]}\u202F${card[1]}`;
+      span.textContent = `${card[0]} ${card[1]}`;
       d.appendChild(span);
       d.dataset.card = card;
     } else {
       d.dataset.card = '';
       d.classList.add('placeholder');
     }
-
-    // Estilo especial para Turn y River
     if (index === 3 && !showTurn) d.classList.add('disabled-turn');
     if (index === 4) d.classList.add('river-slot');
-
     container.appendChild(d);
   });
 }
@@ -47,7 +148,7 @@ function renderHeroHand(heroCards) {
     d.className = 'card';
     const span = document.createElement('span');
     span.className = 'card-content';
-    span.textContent = `${card[0]}\u202F${card[1]}`;
+    span.textContent = `${card[0]} ${card[1]}`;
     d.appendChild(span);
     d.dataset.card = card;
     container.appendChild(d);
@@ -55,37 +156,65 @@ function renderHeroHand(heroCards) {
 }
 
 function renderHeroControls() {
-  const heroContainer = document.getElementById('hero-hand');
-  const btnEye = document.createElement('button');
-  btnEye.className = 'eye-btn hero-eye';
-  btnEye.textContent = '𓂀';
-  btnEye.addEventListener('click', toggleRevealHints);
-  heroContainer.appendChild(btnEye);
+  const heroContainer = document.querySelector('.hero-row');
+
+  // Botones Izquierda
+  if (!document.getElementById('text-lock')) {
+    const textLockBtn = document.createElement('button');
+    textLockBtn.className = 'hero-lock';
+    textLockBtn.id = 'text-lock';
+    textLockBtn.setAttribute('aria-label', 'Bloquear Enunciado');
+    textLockBtn.textContent = '⚿';
+    heroContainer.appendChild(textLockBtn);
+    initTextLock();
+  }
+
+  if (!document.getElementById('hero-eye')) {
+    const eyeBtn = document.createElement('button');
+    eyeBtn.className = 'hero-eye';
+    eyeBtn.id = 'hero-eye';
+    eyeBtn.setAttribute('aria-label', 'Ojito');
+    eyeBtn.textContent = '👁';
+    eyeBtn.addEventListener('click', toggleRevealHints);
+    heroContainer.appendChild(eyeBtn);
+  }
+
+  // Botones Derecha
+  if (!document.getElementById('hero-config')) {
+    const configBtn = document.createElement('button');
+    configBtn.className = 'hero-config';
+    configBtn.id = 'hero-config';
+    configBtn.setAttribute('aria-label', 'Configuración');
+    configBtn.textContent = '⚙';
+    heroContainer.appendChild(configBtn);
+  }
+
+  if (!document.getElementById('hero-capture')) {
+    const captureBtn = document.createElement('button');
+    captureBtn.className = 'hero-capture';
+    captureBtn.id = 'hero-capture';
+    captureBtn.setAttribute('aria-label', 'Capturar');
+    captureBtn.textContent = '⎘';
+    heroContainer.appendChild(captureBtn);
+  }
+
+  if (!document.getElementById('hero-next')) {
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'hero-next';
+    nextBtn.id = 'hero-next';
+    nextBtn.setAttribute('aria-label', 'Forzar Siguiente');
+    nextBtn.textContent = '⟳';
+    heroContainer.appendChild(nextBtn);
+  }
+
+  initRightButtons();
 }
 
 function updateSuitColors() {
   document.querySelectorAll('.card').forEach(card => {
-    card.style.color = '#29a847'; // Verde por defecto
+    card.style.color = '#29a847';
   });
 }
-
-// ==========================
-// Constantes y variables globales
-// ==========================
-const RANKS = ['2','3','4','5','6','7','8','9','T','J','Q','K','A'];
-const SUITS = ['♠','♥','♦','♣'];
-
-export let currentOuts = 0;
-export let currentOutsList = [];
-export let currentBoard = [];
-export let currentHero = [];
-
-// NUEVA VARIABLE para forzar turn
-export let forceTurn = false;
-
-let showTurn = false;
-let currentEquityTurn = 0;
-let currentEquityRiver = 0;
 
 // ==========================
 // FUNCIÓN PRINCIPAL
@@ -94,20 +223,20 @@ export function generateBasicSpot() {
   const container = document.getElementById('bottom-controls');
   container.innerHTML = '';
 
-  // Si forceTurn está activo, siempre hay Flop+Turn
   showTurn = forceTurn ? true : (Math.random() < 0.5);
 
-  // Generar mano y board
-  const { hero, board } = generateRandomProject();
-  currentHero = hero;
-  currentBoard = showTurn ? board.slice(0, 4) : board.slice(0, 3);
+  if (!lockActive) {
+    const { hero, board } = generateRandomProject();
+    currentHero = hero;
+    currentBoard = showTurn ? board.slice(0, 4) : board.slice(0, 3);
+  } else {
+    console.log("Candado activo: Manteniendo Hero y Board actuales");
+  }
 
-  // Outs correctas
-  const outs = setSolutionOuts(hero, currentBoard);
+  const outs = setSolutionOuts(currentHero, currentBoard);
   currentOutsList = outs;
   currentOuts = outs.length;
 
-  // Equity esperada
   if (showTurn) {
     currentEquityTurn = currentOuts * 4;
     currentEquityRiver = null;
@@ -116,29 +245,28 @@ export function generateBasicSpot() {
     currentEquityRiver = currentOuts * 4;
   }
 
-  // Render
-  renderHeroHand(hero);
+  renderHeroHand(currentHero);
   renderHeroControls();
   renderFullBoard(currentBoard);
   renderOutsGrid('bottom-controls');
   renderEquityRow('bottom-controls');
-    renderActionButtons();
-  attachKeypadToEquity();            // Vinculamos el keypad a los campos
-
+  renderActionButtons();
+  attachKeypadToEquity();
 
   const combo = document.getElementById('combo-global');
-  combo.textContent = showTurn
-    ? `Proyecto: ${outs.length} outs (Turn→River)`
-    : `Proyecto: ${outs.length} outs (Flop→Turn→River)`;
+  if (!textLockActive) {
+    combo.textContent = showTurn
+      ? `Proyecto: ${outs.length} outs (Turn→River)`
+      : `Proyecto: ${outs.length} outs (Flop→Turn→River)`;
+  }
 
-  attachValidationListeners();       // Validación automática
+  attachValidationListeners();
   attachConfigListeners();
   updateSuitColors();
 }
 
-
 // ==========================
-// BOTONES
+// BOTONES INFERIORES
 // ==========================
 function renderActionButtons() {
   const container = document.getElementById('bottom-controls');
@@ -151,6 +279,10 @@ function renderActionButtons() {
   btnCall.className = 'action-btn call-btn';
   btnCall.textContent = 'CALL';
 
+  const btnColon = document.createElement('button');
+  btnColon.className = 'action-btn small-btn';
+  btnColon.textContent = ':'; 
+
   const btnSettings = document.createElement('button');
   btnSettings.className = 'action-btn settings-btn';
   btnSettings.textContent = '⚙';
@@ -159,12 +291,18 @@ function renderActionButtons() {
     document.getElementById('config-screen').style.display = 'flex';
   });
 
+  const btnPercent = document.createElement('button');
+  btnPercent.className = 'action-btn small-btn';
+  btnPercent.textContent = '%'; 
+
   const btnFold = document.createElement('button');
   btnFold.className = 'action-btn fold-btn';
   btnFold.textContent = 'FOLD';
 
   btnRow.appendChild(btnCall);
-  btnRow.appendChild(btnSettings);
+  btnRow.appendChild(btnColon);
+  
+  btnRow.appendChild(btnPercent);
   btnRow.appendChild(btnFold);
 
   container.appendChild(btnRow);
@@ -226,7 +364,7 @@ function attachConfigListeners() {
     btnExit.onclick = () => {
       document.getElementById('config-screen').style.display = 'none';
       document.getElementById('screen-outs').style.display = 'flex';
-      generateBasicSpot(); // Regenerar con nueva configuración
+      generateBasicSpot();
     };
   }
 }
