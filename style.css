@@ -424,7 +424,7 @@ body {
 
 .numa-btn {
   background: #000;
-  border: 1px solid #29a847;
+  border: 0px solid #29a847;
   color: #29a847;
   font-family: 'GohuMono', monospace;
   font-size: 14px;
@@ -438,9 +438,11 @@ body {
 }
 
 .numa-btn:hover {
-  background: #29a847;
-  color: #000;
+  background: inherit;
+  color: inherit;
+  cursor: default;
 }
+
 
 /* ===============================
    BOTONES CALL / CONFIG / FOLD
@@ -466,9 +468,11 @@ body {
 }
 
 .action-btn:hover {
-  background: #29a847;
-  color: #000;
+  background: inherit;
+  color: inherit;
+  cursor: default; /* Opcional: no cambiar cursor */
 }
+
 
 .settings-btn {
   font-size: 1.2rem;
@@ -635,3 +639,18 @@ html, body, button, input, textarea, select, span, div, p, h1, h2, h3, h4, h5, h
   font-style: normal;
 }
 
+.action-btn:focus,
+.action-btn:active {
+  background: inherit;
+  color: inherit;
+  outline: none;
+  box-shadow: none;
+}
+
+.numa-btn:focus,
+.numa-btn:active {
+  background: inherit;
+  color: inherit;
+  outline: none;
+  box-shadow: none;
+}
