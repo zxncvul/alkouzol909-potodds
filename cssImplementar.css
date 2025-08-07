@@ -1,0 +1,119 @@
+.timeout-message {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  padding: 1em 2em;
+  border-radius: 5px;
+  font-size: 1.2em;
+  z-index: 9999;
+}
+
+.hidden-by-memory {
+  color: transparent !important;
+  opacity: 0 !important;
+}
+.hidden-by-memory .card-content {
+  color: transparent !important;
+  opacity: 0 !important;
+}
+
+.zone-toggle-wrapper.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.card {
+  color: #29a847;
+}
+
+.selector {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  font-family: monospace;
+  user-select: none;
+}
+.selector-btn {
+  background: transparent;
+  border: none;
+  color: #29a847;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 4.4px;
+}
+.selector-value {
+  font-size: 13px;
+  min-width: 3rem;
+  text-align: center;
+  line-height: 1.2;
+  transform: translateY(1px);
+}
+.selector-btn:disabled {
+  color: #146c29a9;
+  opacity: 1;
+  cursor: default;
+}
+
+.toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+  font-size: 13px;
+}
+.toggle-btn span {
+  color: #29a847;
+}
+.toggle-circle {
+  width: 0.4rem;
+  height: 0.4rem;
+  border: 1px solid #29a847;
+  border-radius: 50%;
+  background: transparent;
+}
+.toggle-btn.active .toggle-circle {
+  background: #29a847;
+}
+.toggle-btn.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Config rows and selects */
+.config-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.4rem 0;
+  font-size: 0.8rem;
+  color: #29a847;
+}
+.config-row label {
+  margin-right: 0.2rem;
+}
+.config-select {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid #29a847;
+  color: #29a847;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-family: monospace;
+}
+.memory-zones label {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 0.4rem;
+  gap: 0.1rem;
+  color: #29a847;
+  font-size: 0.8rem;
+}
+.memory-zones input[type="checkbox"] {
+  accent-color: #29a847;
+}

@@ -1,0 +1,969 @@
+
+/* ===============================
+   FUENTE Y RESETEO BÁSICO
+   =============================== */
+@font-face {
+  font-family: 'GohuMono';
+  src: url('./GohuFont14NerdFontMono-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #29a847;
+  font-family: 'GohuMono', monospace;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+}
+
+/* ===============================
+   CONTENEDORES PRINCIPALES
+   =============================== */
+.outs-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 800px;
+  padding-top: 1rem;
+}
+
+.poker-outs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+/* ===============================
+   MENSAJE SUPERIOR
+   =============================== */
+.combo-global {
+  font-size: 1rem;
+  color: #29a847;
+  min-height: 2.8rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  transition: opacity 0.3s ease;
+}
+
+/* ===============================
+   FILAS DE CARTAS (BOARD + HERO)
+   =============================== */
+.row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.hand, .board {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===============================
+   CARTAS BASE
+   =============================== */
+.card {
+  width: 3.6rem;
+  height: 4.8rem;
+  border: 1px dashed #29a847;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  color: #29a847;
+  border-radius: 3px;
+  background: #000;
+  transition: background 0.2s, transform 0.2s;
+}
+
+/* Botón deshabilitado por modo Magic View: reduce la opacidad y evita clics */
+.disabled-button {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Indica un fallo en la selección de CALL/FOLD. Aplica un borde rojo intenso
+   a las cartas del héroe y del board para señalar un error. */
+.incorrect-call {
+  border-color: #e74c3c !important;
+  
+}
+
+.card-content {
+  color: inherit;
+}
+
+.board .board-slot:nth-child(4) {
+  margin-left: 0.6rem;  
+  margin-right: 0.6rem;
+}
+
+/* ===============================
+   CARTAS ESPECIALES DEL BOARD
+   =============================== */
+.board-slot.placeholder {
+  border: 1px dashed #29a847;
+}
+
+.board-slot.disabled-turn {
+  border: 1px dashed #29a847;
+}
+
+.board-slot.river-slot {
+  border: 1px dashed #29a847;
+}
+
+.board-slot.focus-card {
+  border: 1px solid #e74c3c !important;
+}
+
+/* ===============================
+   HERO HAND + OJITO
+   =============================== */
+#hero-hand {
+  position: relative;
+  display: inline-flex;
+}
+
+/* ===============================
+   CONTENEDOR DEL HÉROE (CANDADO + OJITO + CARTAS)
+   =============================== */
+.hero-row {
+  position: relative;          
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===============================
+   BOTONES LATERALES IZQUIERDA (CANDADO / TEXT-LOCK / OJITO)
+   =============================== */
+
+
+
+
+
+
+.hero-lock:hover,
+.hero-eye:hover,
+#text-lock:hover {
+  color: #29a847;
+}
+
+.hero-lock.active,
+#text-lock.active {
+  color: #29a847;
+}
+
+.hero-eye.active {
+  color: #29a847;
+}
+
+
+.btn-wrapper {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-wrapper.left {
+  left: -8rem;
+  flex-direction: row;
+  align-items: center;
+}
+
+.btn-wrapper.right {
+  right: -8rem;
+  flex-direction: row;
+  align-items: center;
+}
+
+.btn-label {
+  color: #29a84777;
+  font-size: 13px;
+  white-space: nowrap; /* Impide saltos de línea */
+}
+
+.btn-wrapper.left button {
+  order: 2; /* Icono a la derecha */
+}
+
+.btn-wrapper.left .btn-label {
+  order: 1; /* Texto a la izquierda */
+}
+
+
+/* ===============================
+   BOTONES DERECHA (CONFIG / CAPTURE / NEXT)
+   =============================== */
+.hero-config,
+.hero-capture,
+.hero-next {
+  font-size: 1.5rem;
+  font-family: 'GohuMono', monospace !important;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #29a847;
+  
+  right: -3.5rem;  
+  transition: color 0.2s;
+}
+
+.hero-config { top: 12px; }       
+.hero-capture { top: 54%; }       
+.hero-next { top: 85%; }          
+
+.hero-config:hover,
+.hero-capture:hover,
+.hero-next:hover {
+  color: #29a847;
+}
+
+.hero-config:focus,
+.hero-capture:focus,
+.hero-next:focus {
+  outline: none;
+}
+
+.hero-config.active,
+.hero-capture.active,
+.hero-next.active {
+  color: #29a847;
+}
+
+/* Estilos para los botones de la izquierda */
+.btn-wrapper.left button.hero-lock,
+.btn-wrapper.left button.hero-eye {
+  font-size: 1.5rem;
+  font-family: 'GohuMono', monospace;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #29a847;
+  transition: color 0.2s;
+}
+
+.btn-wrapper.left button.hero-lock:hover,
+.btn-wrapper.left button.hero-eye:hover {
+  color: #29a847;
+}
+
+
+/* ===============================
+   BARRA INFERIOR
+   =============================== */
+.control-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+  font-size: 14px;
+}
+
+/* ===============================
+   GRID DE OUTS (4x13)
+   =============================== */
+.identify-grid {
+  border-collapse: separate;
+  margin: -0rem auto 0; 
+  font-family: 'GohuMono', monospace;
+  color: #29a847;
+  text-align: center;
+  user-select: none;
+}
+
+.identify-grid td {
+  width: 23px;
+  height: 23px;
+  border: 0.5px solid #000000;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  font-size: 11px;
+}
+
+.identify-grid .suit-cell {
+  width: 28px;
+  font-weight: bold;
+  border-radius: 5px;
+  background: #29a84711;
+
+  cursor: default;
+}
+
+/* Estados de las celdas del grid */
+.card-grid.selected {
+   
+  background: #29a847b6;
+  color: #000;
+}
+
+.card-grid.correct {
+  background: #29a847b6;
+
+  color: #000;
+}
+
+.card-grid.error {
+  background: #a82929b6;
+  color: #fff;
+}
+
+.card-grid.missed {
+  background: #000;
+  color: #e74c3c;
+  border: 0px dashed #e74c3c;
+}
+
+
+
+/* ===============================
+   CONTADORES DE OUTS
+   =============================== */
+.outs-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2rem;
+  padding-left: 1rem;
+}
+
+.positive-counter {
+  color: #2ecc71;
+  min-width: 30px;  
+  font-size: 12px;
+}
+
+.negative-counter {
+  color: #e74c3c;
+  min-width: 30px;  
+  font-size: 12px;
+}
+
+/* ===============================
+   NUEVA FILA DE EQUITY
+   =============================== */
+.equity-row {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 1rem;
+  margin: -0rem 0 0.5rem;
+  width: 100%;
+}
+
+.equity-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.equity-box .equity-label {
+  font-size: 12px;
+  color: #29a847;
+}
+
+.equity-box .equity-input {
+  width: 50px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: #29a847;
+  font-family: 'GohuMono', monospace;
+  font-size: 12px;
+  outline: none;
+  position: relative;
+  caret-color: transparent;
+}
+
+.cursor-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Cursor parpadeante tipo consola */
+.cursor-wrapper.focused::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 1em;
+  background: #29a847;
+  animation: blink 1s steps(1) infinite;
+  position: absolute;
+  left: calc(2px + var(--cursor-offset, 0ch));
+  top: 2px;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* ===============================
+   TECLADO NUMÉRICO (NUMA KEYPAD)
+   =============================== */
+.numa-keypad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0rem auto 0;
+  gap: 0rem;
+  width: fit-content;
+}
+
+.numa-row {
+  display: flex;
+  gap: 0rem;
+}
+
+.numa-btn {
+  background: #000;
+  border: 0px solid #29a847;
+  color: #29a847;
+  font-family: 'GohuMono', monospace;
+  font-size: 14px;
+  padding: 0.4rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  border-radius: 3px;
+  width: 7.6rem;
+  height: 3.5rem;
+  text-align: center;
+}
+
+.numa-btn:hover {
+  background: inherit;
+  color: inherit;
+  cursor: default;
+}
+
+
+/* ===============================
+   BOTONES CALL / CONFIG / FOLD
+   =============================== */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0rem;
+  margin-top: -0.1rem;
+}
+
+.action-btn {
+  background: transparent;
+  border: 1px solid #29a847;
+  color: #29a847;
+  font-family: 'GohuMono', monospace;
+  font-size: 14px;    
+  padding: 0.6rem 1rem; 
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.action-btn:hover {
+  background: inherit;
+  color: inherit;
+  cursor: default; /* Opcional: no cambiar cursor */
+}
+
+
+.settings-btn {
+  font-size: 1.2rem;
+  padding: 0.4rem 1rem;
+}
+
+/* ===============================
+   ILUMINACIÓN DE JUGADAS Y OUTS
+   =============================== */
+.card.highlight-strong {
+  background: #29a8474b;
+  border: 1px dashed #29a847;
+  color: #000;
+}
+
+.card.highlight-dim {
+  background: #29a8472c;
+  border: 1px dashed #29a847;
+  border-radius: 5px;
+  color: #29a847;
+}
+
+.card-grid.hint {
+  background: #29a84738;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  
+}
+
+/* ===============================
+   ANIMACIÓN MODO OJITO
+   =============================== */
+.clicked-out-blink {
+  animation: blink-out 1s ease-in-out infinite;
+}
+
+@keyframes blink-out {
+  0%, 100% { background-color: #29a8474b; }
+  50% { background-color: #29a847a2; }
+}
+
+/* ===============================
+   PANTALLA DE CONFIGURACIÓN
+   =============================== */
+#config-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 800px;
+  padding-top: 1rem;
+}
+
+.config-btn {
+  background: transparent;
+  border: 1px solid #29a847;
+  color: #29a847;
+  padding: 0.5rem 1.5rem;
+  margin: 0.5rem;
+  font-family: 'GohuMono', monospace;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-radius: 3px;
+}
+
+.config-btn:hover {
+  background: #29a847;
+  color: #000;
+}
+
+.exit-btn {
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+.exit-btn:hover {
+  background: #e74c3c;
+  color: #000;
+}
+
+/* Etiquetas de equity al lado de los contadores */
+.equity-labels-inline {
+  display: flex;
+  gap: 1rem;
+  margin-left: 2rem;
+  align-items: center;
+}
+
+.inline-equity {
+  font-family: 'GohuMono', monospace;
+  font-size: 12px;
+  color: #29a847;
+  display: inline-block;
+  min-width: 70px;
+  max-width: 70px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.outs-header {
+  margin-top: -10px; 
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0rem; 
+  font-size: 12px;
+  margin-left: -20px;
+}
+
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Botones pequeños para ":" y "%" */
+.action-btn.small-btn {
+  width: 4rem;
+  height: 3rem;
+  padding: 0;
+  font-size: 1rem;
+  text-align: center;
+  border: none;
+  
+}
+
+
+#hero-next {
+  font-size: 1.2rem;   /* Más pequeño que el resto */
+  line-height: 1;      /* Asegura que no afecte la altura del contenedor */
+  vertical-align: middle;
+}
+
+.call-btn {
+  background: #29a8473f;   /* Fondo verde brillante */
+  color: #29a847;        /* Texto negro */
+}
+
+.fold-btn {
+  background: #a829292d;   /* Fondo rojo */
+  color: #a82929;        /* Texto blanco */
+}
+
+.call-btn, .fold-btn {
+  border: 0px solid #29a847; /* Borde verde */
+  border-radius: 3px;        /* Bordes redondeados */
+  width: 130px;
+  height: 50px;
+}
+
+.call-btn:hover, .fold-btn:hover {
+  background: inherit;
+  color: inherit;
+}
+
+.identify-grid td:first-child {
+  width: 14px;   /* Ajusta el ancho solo de la primera columna */
+  padding: 0;    /* Opcional: elimina el relleno */
+}
+
+html, body, button, input, textarea, select, span, div, p, h1, h2, h3, h4, h5, h6 {
+  font-family: 'GohuMono', monospace !important;
+  font-variant-emoji: none; /* Previene la sustitución por emojis en navegadores que soporten esta propiedad */
+  font-style: normal;
+}
+
+.action-btn:focus,
+.action-btn:active {
+  background: inherit;
+  color: inherit;
+  outline: none;
+  box-shadow: none;
+}
+
+.numa-btn:focus,
+.numa-btn:active {
+  background: inherit;
+  color: inherit;
+  outline: none;
+  box-shadow: none;
+}
+
+.skull-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+
+  opacity: 0.6;
+ 
+}
+
+.skull-separator svg {
+  stroke: #29a847;
+  transition: stroke 0.2s ease;
+}
+
+.skull-separator:hover svg {
+  stroke: #2ecc71;
+}
+
+/* === Modo Calculadora === */
+/* Células del tablero seleccionadas en modo calculadora */
+/*
+ * Resaltado de la carta seleccionada durante el modo calculadora.
+ * Utiliza el mismo tono verde que se emplea en el modo MagicView y
+ * aplica un parpadeo sutil para llamar la atención. Se sobrescribe
+ * cualquier borde previo y se añade un halo de luz verde.
+ */
+.highlight-calc {
+  border-color: #29a847 !important;
+  
+  /* Parpadeo reutilizando la animación blink (definida más abajo) */
+  animation: blink 1s infinite;
+}
+
+/* Atenúa botones de acción incorrectos en modo calculadora */
+.dimmed {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Animación de parpadeo para el botón correcto en modo calculadora */
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+.blink {
+  animation: blink 1s infinite;
+}
+
+/* Oculta el cursor de los inputs de equity cuando el cuerpo está en modo calculadora.
+ * El caret parpadeante resulta confuso en modo calculadora, donde los
+ * valores se muestran únicamente para consulta. Fuera del modo calculadora
+ * el caret aparece normalmente.
+ */
+/* Oculta el cursor de los inputs de equity cuando el cuerpo está en modo calculadora.
+ * Usamos !important para asegurarnos de que el color se aplica incluso si
+ * otros estilos de caret están definidos en el navegador. */
+body.calculator-mode .equity-input {
+  caret-color: transparent !important;
+}
+
+/* --- Editor de enunciado (modo calculadora) --- */
+.enunciado-editor {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.3rem;
+  align-items: center;
+  color: #29a847;
+}
+
+.unit-selector {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.unit-option {
+  background: transparent;
+  border: 1px dashed #29a847;
+  color: #29a847;
+  padding: 0.2rem 0.6rem;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.unit-option.active {
+  background: #29a847;
+  color: #000;
+}
+
+.edit-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.field-row span {
+  min-width: 4rem;
+  text-align: right;
+}
+
+.field-row input {
+  background: transparent;
+  border: px dashed #29a847;
+  color: #29a847;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  width: 6rem;
+  text-align: right;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0rem;
+}
+
+.edit-actions button {
+  background: none !important;
+  background-color: transparent !important;
+  border: 1px dashed #29a847;
+  color: #29a847;
+  padding: 0.2rem 0.6rem;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.edit-actions button:hover {
+  background: #29a847;
+  color: #000;
+}
+
+.edit-actions button svg {
+  vertical-align: middle;
+  background: none;
+}
+
+
+/* Ajustes para elementos dentro de la barra de edición del enunciado cuando se presentan en una sola fila */
+.enunciado-editor span {
+  min-width: 4rem;
+  text-align: right;
+}
+
+.enunciado-editor input {
+  background: transparent;
+  border: 1px dashed #29a847;
+  color: #29a847;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  width: 1.5rem;
+  text-align: right;
+}
+
+/* Desactiva visualmente cartas del grid que ya están en el board o en la mano */
+.disabled-card-grid {
+  background: #000;
+  color: #111;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.edit-actions button svg {
+  background: transparent !important;
+  fill: none !important;
+}
+.edit-actions button {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px dashed #29a847;
+  color: #29a847;
+  padding: 0.3rem 0.5rem;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.edit-actions button svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.5;
+  background: none;
+}
+
+.edit-actions {
+  background-color: #000 !important;
+}
+
+.edit-actions button {
+  background-color: #000 !important;
+  background: none !important;
+  border: 1px dashed #29a847;
+  color: #29a847;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.6rem;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.apply-btn, .cancel-btn {
+  background: #000 !important;
+  border: 0px dashed #29a847;
+  color: #29a847;
+  padding: 0.3rem 0.6rem;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.apply-btn svg,
+.cancel-btn svg {
+  background: none;
+  fill: none;
+  stroke-width: 2.5;
+}
+
+
+.enunciado-editor input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+body.calculator-mode .equity-input:focus {
+  outline: none;
+  caret-color: transparent;
+}
+
+.board.disable-interaction {
+  pointer-events: none; /* impide cualquier clic o hover */
+}
+
+.config-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.config-row-toggle {
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+
+
+
+
+
+
+.toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: transparent;
+  border: 1px solid #29a847;
+  border-radius: 4px;
+  padding: 0.3rem 0.6rem;
+  color: #29a847;
+  font-family: 'GohuMono', monospace;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.toggle-circle {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #29a847;
+  border-radius: 50%;
+  display: inline-block;
+  background: transparent;
+}
+
+.toggle-btn.active .toggle-circle {
+  background: #29a847;
+}
+
+
+
+#screen-config {
+  margin-top: 0.5rem;
+  font-size: 13px;
+  gap: 0.6rem;
+}
